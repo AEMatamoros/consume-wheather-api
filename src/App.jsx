@@ -9,6 +9,9 @@ function App() {
   //Hook To set the card data
   const [data, setdata] = useState([]);
 
+  //Hook To set the region
+  const [region, setregion] = useState('');
+
   //Hook to handle usersearch
   const [search, setsearch] = useState('');
 
@@ -27,6 +30,7 @@ function App() {
         if(search.length> 0){
           let response = await Fetch(`${search}`);
           let data = await response.json();
+          setregion(data.region)
           setdata(data.next_days);
           setloadstate(false);
         }else{
@@ -49,6 +53,7 @@ function App() {
       try {
         let response = await Fetch(`${position.coords.latitude},${position.coords.longitude}`);
         let data = await response.json();
+        setregion(data.region)
         setdata(data.next_days);
         setloadstate(false);
       } catch (error) {
@@ -72,6 +77,8 @@ function App() {
       <input type="text" className='city-input custom-font-style' placeholder='Ingrese Ciudad' onChange={handleInput} />
       <button className='custom-buttons custom-font-style' onClick={handleCurrentPosition}>Usar mi Ubicación</button>
       <button className='custom-buttons custom-font-style' onClick={handleSearch}>Buscar</button>
+      <br />
+      <span className='text-center'>Region Actual : {region}</span>
       {data.length > 0
         ?
         <div className="cards-section">
