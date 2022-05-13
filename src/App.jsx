@@ -7,30 +7,55 @@ import { Fetch } from './helpers/fetch';
 function App() {
 
   //Hook To set the card data
-  const [data, setdata] = useState([])
+  const [data, setdata] = useState([]);
 
   //Hook to handle usersearch
-  const [search, setsearch] = useState('')
+  const [search, setsearch] = useState('');
+
+  //Hook To set the card data
+  const [loadstate, setloadstate] = useState(false);
 
   //handle User input
   const handleInput = (e) => {
-    setsearch(e.target.value)
+    setsearch(e.target.value);
   }
 
   //Handle search button
   const handleSearch = async (e) => {
-    let response = await Fetch(`${search}`)
-    let data = await response.json()
-    setdata(data.next_days)
+    setloadstate(true);
+    try {
+        if(search.length> 0){
+          let response = await Fetch(`${search}`);
+          let data = await response.json();
+          setdata(data.next_days);
+          setloadstate(false);
+        }else{
+          setdata([]);
+          setloadstate(false);
+        }
+        
+    } catch (error) {
+        setloadstate(false);
+        console.log("Ocurrio un error al obtener la data", error);
+    }
+
   }
 
   //Handle current position
   const handleCurrentPosition = async (e) => {
 
     navigator.geolocation.getCurrentPosition(async (position) => {
-      let response = await Fetch(`${position.coords.latitude},${position.coords.longitude}`)
-      let data = await response.json()
-      setdata(data.next_days)
+      setloadstate(true);
+      try {
+        let response = await Fetch(`${position.coords.latitude},${position.coords.longitude}`);
+        let data = await response.json();
+        setdata(data.next_days);
+        setloadstate(false);
+      } catch (error) {
+        console.log("Ocurrionun error al obtener la data", error);
+        setloadstate(false);
+      }
+      
     });
 
   }
@@ -45,7 +70,7 @@ function App() {
         </h1>
       </div>
       <input type="text" className='city-input custom-font-style' placeholder='Ingrese Ciudad' onChange={handleInput} />
-      <button className='custom-buttons custom-font-style' onClick={handleCurrentPosition}>Usar mi Unicación</button>
+      <button className='custom-buttons custom-font-style' onClick={handleCurrentPosition}>Usar mi Ubicación</button>
       <button className='custom-buttons custom-font-style' onClick={handleSearch}>Buscar</button>
       {data.length > 0
         ?
@@ -56,8 +81,15 @@ function App() {
         </div>
         : <div className='text-center'>
           <h2>
-          Busca la informacion del clima de una ciudad o de tu posicion actual
+            Selecciona una opcion busca la información del clima de una ciudad o de tu posicion actual
           </h2>
+        </div>
+      }
+
+      {
+        loadstate && 
+        <div className='container-center'>
+        <div className="lds-dual-ring"></div>
         </div>
       }
 

@@ -19,7 +19,6 @@ code {
     monospace;
 }
 
-
 .lds-dual-ring {
   display: inline-block;
   width: 80px;
@@ -33,10 +32,11 @@ code {
   height: 64px;
   margin: 8px;
   border-radius: 50%;
-  border: 6px solid #fff;
-  border-color: #fff transparent #fff transparent;
+  border: 6px solid rgb(111, 249, 184);
+  border-color: aquamarine transparent aquamarine transparent;
   animation: lds-dual-ring 1.2s linear infinite;
 }
+
 @keyframes lds-dual-ring {
   0% {
     transform: rotate(0deg);
